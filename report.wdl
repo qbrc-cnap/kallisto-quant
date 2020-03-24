@@ -51,7 +51,7 @@ task generate_report {
     }
 
     runtime {
-        docker: "docker.io/blawney/kallisto:v0.0.2"
+        docker: "docker.io/blawney/kallisto-quant:v0.0.1"
         cpu: 2
         memory: "6 G"
         disks: "local-disk " + disk_size + " HDD"

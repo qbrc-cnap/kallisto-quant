@@ -28,7 +28,7 @@ task run_fastqc {
 
     runtime {
         zones: "us-east4-c"
-        docker: "docker.io/blawney/kallisto:v0.0.2"
+        docker: "docker.io/blawney/kallisto-quant:v0.0.1"
         cpu: 2
         memory: "4 G"
         disks: "local-disk " + disk_size + " HDD"
