@@ -23,6 +23,7 @@ workflow KallistoQuantWorkflow{
     # and so on.
     String human_tag = "human"
     String mouse_tag = "mouse"
+    String merged_quants_tag = "merged_tpm"
 
     Array[Pair[File, File]] fastq_pairs = zip(r1_files, r2_files)
 
@@ -73,13 +74,24 @@ workflow KallistoQuantWorkflow{
     #         git_repo_url = git_repo_url
     # }
 
+   call concatenate {
+        input:
+            main_abundance_files = single_sample_process.abundance_tsv,
+            human_abundance_files = filter_for_pdx.human_tsv,
+            mouse_abundance_files = filter_for_pdx.mouse_tsv,
+            mouse_tag = mouse_tag,
+            human_tag = human_tag,
+            merged_quants_tag = merged_quants_tag,
+            is_pdx = is_pdx
+    }
+
     call zip_results {
         input:
             zip_name = output_zip_name,
             multiqc_report = experimental_qc.report,
-            main_abundance_files = single_sample_process.abundance_tsv,
-            human_abundance_files = filter_for_pdx.human_tsv,
-            mouse_abundance_files = filter_for_pdx.mouse_tsv,
+            main_abundance_file = concatenate.main_tpm_matrix,
+            human_abundance_file = concatenate.human_tpm_matrix,
+            mouse_abundance_file = concatenate.mouse_tpm_matrix,
             #analysis_report = make_report.report,
             is_pdx = is_pdx
     }
@@ -94,6 +106,50 @@ workflow KallistoQuantWorkflow{
         workflow_long_description : "Use this workflow for performing pseudo-alignments with Kallisto, which produces estimated transcript abundances. Estimates of gene level quantification performed by tximport."
     }
 }
+
+
+task concatenate {
+        # This concatenates the featureCounts count files into a 
+        # raw count matrix.
+
+        Array[File] main_abundance_files
+        Array[File] human_abundance_files
+        Array[File] mouse_abundance_files
+        String human_tag
+        String mouse_tag
+        String merged_quants_tag
+        Boolean is_pdx
+
+        Int disk_size = 30
+
+        command {
+            if [ "${is_pdx}" = "true" ]
+            then
+                /usr/bin/python3 /opt/software/concat_tpm.py -o "${merged_quants_tag}.${mouse_tag}.tsv" -s "abundance.${mouse_tag}.tsv" ${sep=" " mouse_abundance_files}
+                /usr/bin/python3 /opt/software/concat_tpm.py -o "${merged_quants_tag}.${human_tag}.tsv" -s "abundance.${human_tag}.tsv" ${sep=" " human_abundance_files}
+                touch "${merged_quants_tag}.tsv"
+            else
+                /usr/bin/python3 /opt/software/concat_tpm.py -o "${merged_quants_tag}.tsv" -s "abundance.tsv" ${sep=" " main_abundance_files}
+                touch "abundance.${human_tag}.tsv" ${sep=" " human_abundance_files}
+                touch "abundance.${mouse_tag}.tsv" ${sep=" " mouse_abundance_files}
+        fi
+        }
+
+        output {
+            File main_tpm_matrix = "${merged_quants_tag}.tsv"
+            File mouse_tpm_matrix = "${merged_quants_tag}.${mouse_tag}.tsv"
+            File human_tpm_matrix = "${merged_quants_tag}.${human_tag}.tsv"
+        }
+
+        runtime {
+            docker: "docker.io/blawney/kallisto:v0.0.2"
+            cpu: 2
+            memory: "4 G"
+            disks: "local-disk " + disk_size + " HDD"
+            preemptible: 0 
+        }
+
+    }
 
 task filter_for_pdx {
 
@@ -113,7 +169,6 @@ task filter_for_pdx {
         if [ "${is_pdx}" = "true" ]
         then
             head -1 ${abundance_tsv} > "${sample_name}.abundance.${human_tag}.tsv"
-            head -1 ${abundance_tsv} > "${sample_name}.abundance.${mouse_tag}.tsv"
             grep -P "^ENST" ${abundance_tsv} >> "${sample_name}.abundance.${human_tag}.tsv"
             grep -vP "^ENST" ${abundance_tsv} >> "${sample_name}.abundance.${mouse_tag}.tsv"
         else
@@ -143,9 +198,9 @@ task zip_results {
     #File analysis_report
     #File gene_level_count_file
     #File transcript_level_abundance
-    Array[File] main_abundance_files
-    Array[File] human_abundance_files
-    Array[File] mouse_abundance_files
+    File main_abundance_file
+    File human_abundance_file
+    File mouse_abundance_file
     Boolean is_pdx
 
     Int disk_size = 100
@@ -160,10 +215,10 @@ task zip_results {
 
         if [ "${is_pdx}" = "true" ]
         then
-            mv ${sep=" " human_abundance_files} report/quantifications
-            mv ${sep=" " mouse_abundance_files} report/quantifications
+            mv ${human_abundance_file} report/quantifications
+            mv ${mouse_abundance_file} report/quantifications
         else
-            mv ${sep=" " main_abundance_files} report/quantifications
+            mv ${main_abundance_file} report/quantifications
         fi
 
         zip -r "${zip_name}.zip" report

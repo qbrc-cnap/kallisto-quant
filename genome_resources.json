@@ -1,14 +1,17 @@
 {
     "Ensembl Homo sapiens GRCh38.95":{
         "kallisto_index_path": "gs://cnap-hsph-resources/grch38.95/Homo_sapiens.GRCh38.cdna.all.release-95_k31.idx",
-        "transcript_to_gene_mapping": "gs://cnap-hsph-resources/grch38.95/Homo_sapiens.GRCh38.95.kallisto_gene_to_transcript_mapping.tsv"
+        "transcript_to_gene_mapping": "gs://cnap-hsph-resources/grch38.95/Homo_sapiens.GRCh38.95.kallisto_gene_to_transcript_mapping.tsv",
+        "is_pdx": false
     },
     "Ensembl Mus musculus GRCm38.95":{
         "kallisto_index_path": "gs://cnap-hsph-resources/grcm38.95/Mus_musculus.GRCm38.cdna.all.release-95_k31.idx",
-        "transcript_to_gene_mapping": "gs://cnap-hsph-resources/grcm38.95/Mus_musculus.GRCm38.95.kallisto_gene_to_transcript_mapping.tsv"
+        "transcript_to_gene_mapping": "gs://cnap-hsph-resources/grcm38.95/Mus_musculus.GRCm38.95.kallisto_gene_to_transcript_mapping.tsv",
+        "is_pdx": false
     },
     "PDx Hybrid: Ensembl Mus musculus GRCm38.95 + Homo sapiens GRCh38.95":{
         "kallisto_index_path": "gs://cnap-hsph-resources/grch38_plus_grcm38_hybrid.95/grch38_plus_grcm38_hybrid.95.cdna.k31.idx",
-        "transcript_to_gene_mapping": "gs://cnap-hsph-resources/grch38_plus_grcm38_hybrid.95/transcript_to_gene_mapping.grch38_plus_grcm38_hybrid.95.tsv"
+        "transcript_to_gene_mapping": "gs://cnap-hsph-resources/grch38_plus_grcm38_hybrid.95/transcript_to_gene_mapping.grch38_plus_grcm38_hybrid.95.tsv",
+        "is_pdx": true
     }
 }

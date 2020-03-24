@@ -74,6 +74,8 @@ RUN pip3 install Jinja2
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
 
+ADD concat_tpm.py /opt/software/
+
 # The scripts for performing pre-workflow checks:
 RUN mkdir /opt/software/precheck
 ADD perform_precheck.py /opt/software/precheck/

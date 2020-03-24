@@ -20,5 +20,6 @@ def map_inputs(user, all_data, data_name, id_list):
     d[id_list[0]] = genome_choice 
     d[id_list[1]] = j[genome_choice]['kallisto_index_path']
     d[id_list[2]] = j[genome_choice]['transcript_to_gene_mapping']
+    d[id_list[3]] = j[genome_choice]['is_pdx']
     return d 
 

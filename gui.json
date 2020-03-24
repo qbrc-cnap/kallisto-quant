@@ -18,7 +18,8 @@
 			"target": {
 				"target_ids": ["KallistoQuantWorkflow.genome", 
 					"KallistoQuantWorkflow.kallisto_index_path", 
-					"KallistoQuantWorkflow.transcript_to_gene_mapping"
+					"KallistoQuantWorkflow.transcript_to_gene_mapping",
+					"KallistoQuantWorkflow.is_pdx"
 				],
 				"name": "genome_choice",
 				"handler": "genome_mapper.py"
@@ -42,14 +43,6 @@
 					}
 				]
 			}
-		},
-		{
-			"display_element": {
-				"type": "boolean_checkbox",
-				"label": "Is patient-derived xenograft",
-				"description": "Please check if the sample is a patient-derived xenograft mouse model."
-			},
-			"target": "KallistoQuantWorkflow.is_pdx"
 		},
 		{
 			"target":"KallistoQuantWorkflow.output_zip_name",
