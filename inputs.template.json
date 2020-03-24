@@ -1,0 +1,12 @@
+{
+  "KallistoQuantWorkflow.git_repo_url": "String",
+  "KallistoQuantWorkflow.output_zip_name": "String",
+  "KallistoQuantWorkflow.git_commit_hash": "String",
+  "KallistoQuantWorkflow.r2_files": "Array[File]",
+  "KallistoQuantWorkflow.r1_files": "Array[File]",
+  "KallistoQuantWorkflow.kallisto_index_path": "File",
+  "KallistoQuantWorkflow.genome": "String",
+  "KallistoQuantWorkflow.transcript_to_gene_mapping": "File",
+  "KallistoQuantWorkflow.is_pdx": "Boolean"
+}
+

@@ -1,0 +1,83 @@
+{
+	"input_elements": [
+		{
+			"target": {
+				"target_ids": ["KallistoQuantWorkflow.r1_files", "KallistoQuantWorkflow.r2_files"],
+				"name": "input_files",
+				"handler": "input_mapping.py"
+			},
+			"display_element": {
+				"type": "file_chooser",
+                "regex_filter": ".*_R[1,2].fastq.gz",
+				"label": "Input files:",
+				"choose_multiple": true,
+				"description": "Choose input fastq-format files to analyze.  Files should end with \"_R1.fastq.gz\" or \"_R2.fastq.gz\".  Unpaired files will be ignored and NOT analyzed."
+			}	
+		},
+		{
+			"target": {
+				"target_ids": ["KallistoQuantWorkflow.genome", 
+					"KallistoQuantWorkflow.kallisto_index_path", 
+					"KallistoQuantWorkflow.transcript_to_gene_mapping"
+				],
+				"name": "genome_choice",
+				"handler": "genome_mapper.py"
+			},
+			"display_element": {
+				"type": "select",
+				"label": "Reference genome",
+				"description": "Choose the reference genome to use for this process.",
+				"choices": [
+					{
+						"value": "Ensembl Homo sapiens GRCh38.95",
+						"display": "Ensembl Homo sapiens GRCh38.95"
+					},
+					{
+						"value": "Ensembl Mus musculus GRCm38.95",
+						"display": "Ensembl Mus musculus GRCm38.95"
+					},
+					{
+						"value":"PDx Hybrid: Ensembl Mus musculus GRCm38.95 + Homo sapiens GRCh38.95",
+						"display":"PDx Hybrid: Ensembl Mus musculus GRCm38.95 + Homo sapiens GRCh38.95"
+					}
+				]
+			}
+		},
+		{
+			"display_element": {
+				"type": "boolean_checkbox",
+				"label": "Is patient-derived xenograft",
+				"description": "Please check if the sample is a patient-derived xenograft mouse model."
+			},
+			"target": "KallistoQuantWorkflow.is_pdx"
+		},
+		{
+			"target":"KallistoQuantWorkflow.output_zip_name",
+			"display_element": {
+				"type": "text",
+				"label": "Output zip-archive name:",
+				"description": "Name the output file.  Result will be a \"zip\" archive.  If you enter \"my_output\", then the results will be \"my_output.zip\"."
+			}
+		},
+		{
+			"target": "KallistoQuantWorkflow.git_repo_url",
+			"display_element": {
+				"type": "dynamic_hidden",
+				"handler": "add_git_repo_url.py",
+				"context_args": {
+					"variable_name": "git_repo_url"
+				}
+			}
+		},
+		{
+			"target": "KallistoQuantWorkflow.git_commit_hash",
+			"display_element": {
+				"type": "dynamic_hidden",
+				"handler": "add_git_hash.py",
+				"context_args": {
+					"variable_name": "git_commit_hash"
+				}
+			}
+		}
+	]
+}
