@@ -103,6 +103,8 @@ task run_tximport {
         Int disk_size = 50
 
         command {
+            source activate r36
+
             if [ "${is_pdx}" = "true" ]
             then
                 Rscript /opt/software/run_tximport.R \
