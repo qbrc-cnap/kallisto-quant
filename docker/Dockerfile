@@ -96,7 +96,7 @@ ADD check_fastq.py /opt/software/precheck/
 
 # the actual script to run sleuth and tximport:
 #ADD sleuth.R /opt/software
-#ADD run_tximport.R /opt/software
+COPY run_tximport.R /opt/software
 
 # Add the report template and styling:
 #RUN mkdir /opt/report
