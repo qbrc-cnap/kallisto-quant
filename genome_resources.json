@@ -11,7 +11,7 @@
     },
     "PDx Hybrid: Ensembl Mus musculus GRCm38.95 + Homo sapiens GRCh38.95":{
         "kallisto_index_path": "gs://cnap-hsph-resources/grch38_plus_grcm38_hybrid.95/grch38_plus_grcm38_hybrid.95.cdna.k31.idx",
-        "transcript_to_gene_mapping": "gs://cnap-hsph-resources/grch38_plus_grcm38_hybrid.95/transcript_to_gene_mapping.with_species.grch38_plus_grcm38_hybrid.95.tsv",
+        "transcript_to_gene_mapping": "gs://cnap-hsph-resources/grch38_plus_grcm38_hybrid.95/gtf_based_transcript_to_gene_mapping.with_species.grch38_plus_grcm38_hybrid.95.tsv",
         "is_pdx": true
     }
 }
