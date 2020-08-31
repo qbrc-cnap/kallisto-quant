@@ -71,6 +71,14 @@
 					"variable_name": "git_commit_hash"
 				}
 			}
+		},
+		{
+			"target": "KallistoQuantWorkflow.trim_length_bp",
+			"display_element": {
+				"type": "numeric",
+				"label":"Trim length",
+				"description":"How many bp to keep"
+			}
 		}
 	]
 }

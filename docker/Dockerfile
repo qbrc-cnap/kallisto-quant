@@ -42,6 +42,11 @@ RUN conda config --add channels defaults && \
   #conda install -y -c r r-ggplot2 && \
   #conda install -y -c r r-gridextra
 
+# install trimmomatic
+RUN cd /opt/software/ && \
+    wget http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.39.zip && \
+    unzip Trimmomatic-0.39.zip
+
 # Install fastQC:
 RUN cd /opt/software && \
   wget https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.8.zip && \

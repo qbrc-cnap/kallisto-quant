@@ -10,6 +10,7 @@ workflow KallistoQuantWorkflow{
 
     Array[File] r1_files
     Array[File] r2_files
+    Int trim_length_bp
     String genome
     File kallisto_index_path
     File transcript_to_gene_mapping
@@ -30,20 +31,27 @@ workflow KallistoQuantWorkflow{
 
     scatter(item in fastq_pairs){
 
+        call trim_reads {
+            input:
+            r1 = item.left,
+            r2 = item.right,
+            trim_length_bp = trim_length_bp
+        }
+
         call fastqc.run_fastqc as fastqc_for_read1 {
             input:
-                fastq = item.left
+                fastq = trim_reads.trimmed_r1
         }
 
         call fastqc.run_fastqc as fastqc_for_read2 {
             input:
-                fastq = item.right
+                fastq = trim_reads.trimmed_r2
         }
 
         call single_sample_kallisto.SingleSampleKallistoWorkflow as single_sample_process{
             input:
-                r1_fastq = item.left,
-                r2_fastq = item.right,
+                r1_fastq = trim_reads.trimmed_r1,
+                r2_fastq = trim_reads.trimmed_r2,
                 kallisto_index_path = kallisto_index_path
                         
             }
@@ -132,7 +140,7 @@ task run_tximport {
         }
 
         runtime {
-            docker: "docker.io/blawney/kallisto-quant:v0.0.2"
+            docker: "docker.io/blawney/kallisto-quant:v0.0.3"
             cpu: 2
             memory: "4 G"
             disks: "local-disk " + disk_size + " HDD"
@@ -158,7 +166,7 @@ task concatenate {
         }
 
         runtime {
-            docker: "docker.io/blawney/kallisto-quant:v0.0.2"
+            docker: "docker.io/blawney/kallisto-quant:v0.0.3"
             cpu: 2
             memory: "4 G"
             disks: "local-disk " + disk_size + " HDD"
@@ -195,9 +203,49 @@ task zip_results {
     }
 
     runtime {
-        docker: "docker.io/blawney/kallisto-quant:v0.0.2"
+        docker: "docker.io/blawney/kallisto-quant:v0.0.3"
         cpu: 2
         memory: "6 G"
+        disks: "local-disk " + disk_size + " HDD"
+        preemptible: 0
+    }
+}
+
+task trim_reads {
+
+    File r1
+    File r2
+    Int trim_length_bp
+
+    String suffix="_R1.fastq.gz"
+
+    # Extract the samplename from the fastq filename
+    String sample_name = basename(r1, suffix)
+
+    Int disk_size = 200
+
+
+    command {
+        java -jar /opt/software/Trimmomatic-0.39/trimmomatic-0.39.jar PE \
+            -trimlog ${sample_name}.trim.log \
+            -summary ${sample_name}.trim_summary.log \
+            ${r1} ${r2} \
+            -baseout ${sample_name}.trimmed.fastq.gz \
+            CROP:${trim_length_bp}
+
+        mv "${sample_name}.trimmed_1P.fastq.gz" "${sample_name}_R1.fastq.gz"
+        mv "${sample_name}.trimmed_2P.fastq.gz" "${sample_name}_R2.fastq.gz"
+    }
+
+    output {
+        File trimmed_r1 = "${sample_name}_R1.fastq.gz"
+        File trimmed_r2 = "${sample_name}_R2.fastq.gz"
+    }
+
+    runtime {
+        docker: "docker.io/blawney/kallisto-quant:v0.0.3"
+        cpu: 4
+        memory: "12 G"
         disks: "local-disk " + disk_size + " HDD"
         preemptible: 0
     }

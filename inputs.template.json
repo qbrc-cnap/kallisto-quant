@@ -7,6 +7,7 @@
   "KallistoQuantWorkflow.kallisto_index_path": "File",
   "KallistoQuantWorkflow.genome": "String",
   "KallistoQuantWorkflow.transcript_to_gene_mapping": "File",
-  "KallistoQuantWorkflow.is_pdx": "Boolean"
+  "KallistoQuantWorkflow.is_pdx": "Boolean",
+  "KallistoQuantWorkflow.trim_length_bp": "Int"
 }
 

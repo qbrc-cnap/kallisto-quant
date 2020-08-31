@@ -56,7 +56,7 @@ task KallistoQuantification {
     }
 
     runtime {
-        docker: "docker.io/blawney/kallisto-quant:v0.0.1"
+        docker: "docker.io/blawney/kallisto-quant:v0.0.3"
         cpu: 4
         memory: "20 G"
         disks: "local-disk " + disk_size + " HDD"
